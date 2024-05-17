@@ -1,0 +1,17 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+  "settings": {
+    "documentationRules": {
+      "companyName": "InfinityFlow",
+      "copyrightText": "Copyright (c) {companyName}. All Rights Reserved.\nLicensed under the {licenseName}. See {licenseFile} file in the solution root for full license information.",
+      "xmlHeader": false,
+      "variables": {
+        "licenseName": "Apache 2.0",
+        "licenseFile": "LICENSE"
+      }
+    },
+    "orderingRules": {
+      "usingDirectivesPlacement": "insideNamespace"
+    }
+  }
+}

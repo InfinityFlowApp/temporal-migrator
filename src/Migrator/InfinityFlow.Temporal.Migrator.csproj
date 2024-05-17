@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <None Pack="true" PackagePath="" Include="README.md"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Temporalio.Extensions.Hosting" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\InfinityFlow.Temporal.Migrator.Abstractions.csproj" />
+  </ItemGroup>
+</Project>
