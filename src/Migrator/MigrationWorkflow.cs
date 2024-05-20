@@ -19,9 +19,6 @@ public class MigrationWorkflow
     /// </summary>
     internal const string DefaultTaskQueueName = "migration";
 
-    private readonly Type _migrationType = typeof(IMigration);
-    private readonly List<Type> _loadedTypes = [];
-
     /// <summary>
     /// Run Migration.
     /// </summary>
@@ -57,56 +54,17 @@ public class MigrationWorkflow
     {
         cancellationToken.ThrowIfCancellationRequested();
         var workflowId = Workflow.Info.WorkflowId;
-        var logger = Workflow.Logger;
 
-        if (assemblies.Length == 0)
-        {
-            // scan all domain
-            _loadedTypes.AddRange(AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes()));
-        }
-        else
-        {
-            // only load what is needed by configuration.
-            var loadedAssemblies = new List<Assembly>();
-            foreach (var assembly in assemblies)
+        var types = await Workflow.ExecuteLocalActivityAsync<MigrationActivities, IEnumerable<Type>>(
+            act => act.GetTypesAsync(assemblies),
+            new LocalActivityOptions
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                ActivityId = $"{workflowId}_{nameof(MigrationActivities)}",
+                ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
+                CancellationToken = cancellationToken,
+            });
 
-                try
-                {
-                    var loadedAssembly = Assembly.Load(assembly);
-                    loadedAssemblies.Add(loadedAssembly);
-                }
-                catch (ArgumentNullException)
-                {
-                    logger.LogDebug("{Assembly} string is null", assembly);
-                }
-                catch (ArgumentException)
-                {
-                    logger.LogDebug("{Assembly} string is empty", assembly);
-                }
-                catch (FileNotFoundException)
-                {
-                    logger.LogDebug("{Assembly} could not be found", assembly);
-                }
-                catch (FileLoadException)
-                {
-                    logger.LogDebug("{Assembly} could not be loaded", assembly);
-                }
-                catch (BadImageFormatException)
-                {
-                    logger.LogDebug("{Assembly} corrupted", assembly);
-                }
-            }
-
-            _loadedTypes.AddRange(loadedAssemblies.SelectMany(assembly => assembly.GetTypes()));
-        }
-
-        var migrationTypes = _loadedTypes.Where(t => _migrationType.IsAssignableFrom(t) && t is { IsInterface: false, IsAbstract: false });
-        var richTypes = migrationTypes.Select(t => new { Type = t, Version = t.GetCustomAttribute<MigrationAttribute>()!.Version, });
-        var sortedTypes = richTypes.OrderBy(t => t.Version);
-
-        foreach (var migrationType in sortedTypes.Select(s => s.Type))
+        foreach (var migrationType in types)
         {
             var nextType = migrationType.ToString();
 
@@ -118,10 +76,6 @@ public class MigrationWorkflow
                 {
                     Id = $"{workflowId}_{migrationType.Name}",
                     CancellationToken = cancellationToken,
-                    Memo = new Dictionary<string, object>
-                    {
-                        { "Parent", workflowId },
-                    },
                 });
         }
     }
@@ -136,11 +90,11 @@ public class MigrationWorkflow
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var potentialMatches = _loadedTypes.ToList();
+        var potentialMatches = GlobalReflector.GetMigrations(Array.Empty<Assembly>());
 
-        if (potentialMatches.Count != 0)
+        if (potentialMatches.Count() != 0)
         {
-            var first = potentialMatches[0];
+            var first = potentialMatches.First(w => w.ToString() == type);
 
             if (Activator.CreateInstance(first) is not IMigration migration)
             {
@@ -151,7 +105,7 @@ public class MigrationWorkflow
         }
         else
         {
-            Workflow.Logger.LogInformation("No type was found for: {Type}", type);
+            Workflow.Logger.LogWarning("No type was found for: {Type}", type);
         }
     }
 }

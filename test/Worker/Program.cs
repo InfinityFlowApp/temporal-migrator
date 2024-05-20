@@ -1,8 +1,10 @@
 ﻿// Copyright (c) InfinityFlow. All Rights Reserved.
 // Licensed under the Apache 2.0. See LICENSE file in the solution root for full license information.
 
+using System.Text.Json;
 using InfinityFlow.Temporal.Migrator;
 using Temporalio.Client;
+using Temporalio.Converters;
 using Temporalio.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -18,7 +20,15 @@ builder
         builder.Configuration.GetConnectionString("temporal")!,
         "test",
         "test")
-    .AddWorkflow<MigrationWorkflow>();
+    .AddWorkflow<MigrationWorkflow>()
+    .AddSingletonActivities<MigrationActivities>()
+    .ConfigureOptions(options =>
+    {
+        var serializerOptions = new JsonSerializerOptions();
+        serializerOptions.Converters.Add(new TypeJsonConverter());
+        options.ClientOptions.DataConverter =
+            new DataConverter(new DefaultPayloadConverter(serializerOptions), new DefaultFailureConverter());
+    });
 
 var host = builder.Build();
 
