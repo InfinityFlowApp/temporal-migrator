@@ -6,6 +6,7 @@
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.Testing"/>
     <PackageReference Include="coverlet.collector"/>
+    <PackageReference Include="GitHubActionsTestLogger"/>
     <PackageReference Include="Microsoft.NET.Test.Sdk"/>
     <PackageReference Include="Temporalio" />
     <PackageReference Include="xunit"/>
