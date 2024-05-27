@@ -1,0 +1,71 @@
+﻿name: Release
+
+on:
+  pull_request: {}
+  push:
+    branches:
+      - main
+  release:
+    types:
+      - published
+  workflow_dispatch: {}
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET Core SDK 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+      - name: Restore .NET Packages
+        run: dotnet restore --locked-mode
+
+      - name: Build .NET Solution
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test .NET Solution
+        run: dotnet test --collect:"XPlat Code Coverage" --no-build --configuration Release --logger "trx;LogFilePrefix=test-results" -property:DeterministicSourcePaths=true -property:IncludeTestAssembly=true --results-directory '${{ github.workspace }}/reports/coverage/'
+
+      - name: Upload Test Artifacts
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: test-results
+          path: "**/test-results*.trx"
+
+      - name: Pack .NET Solution
+        run: dotnet pack --configuration Release --no-build --output pack/
+        if: ${{ github.event_name == 'release'  && github.ref_type == 'tag' || github.event.release.tag_name }}
+
+      - name: Publish .NET Solution to GitHub Packages
+        continue-on-error: true
+        run: dotnet nuget push pack/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+        if: ${{ github.event_name == 'release'  && github.ref_type == 'tag' || github.event.release.tag_name }}
+
+      - name: Store .NET Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget
+          if-no-files-found: error
+          retention-days: 7
+          path: pack/*.nupkg
+        if: ${{ github.event_name == 'release'  && github.ref_type == 'tag' || github.event.release.tag_name }}
+
+      - name: Publish .NET Solution to NuGet.org
+        continue-on-error: true
+        run: dotnet nuget push pack/*.nupkg --api-key ${{ secrets.NUGET_ORG_KEY }} --source nuget
+        if: ${{ github.event_name == 'release'  && github.ref_type == 'tag' || github.event.release.tag_name }}
