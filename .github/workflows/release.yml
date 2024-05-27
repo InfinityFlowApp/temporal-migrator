@@ -42,7 +42,14 @@ jobs:
         run: dotnet build "./Migrator.sln" --configuration Release --no-restore
 
       - name: Test .NET Solution
-        run: dotnet test "./Migrator.sln" --collect:"XPlat Code Coverage" --no-build --configuration Release --logger console --logger GitHubActions --logger "trx;LogFilePrefix=test-results" -property:DeterministicSourcePaths=true -property:IncludeTestAssembly=true --results-directory '${{ github.workspace }}/reports/coverage/'
+        run: >
+          dotnet test "./Migrator.sln"
+          --collect:"XPlat Code Coverage" --no-build --configuration Release
+          --logger console --logger GitHubActions --logger "trx;LogFilePrefix=test-results"
+          -property:DeterministicSourcePaths=true -property:IncludeTestAssembly=true
+          --results-directory '${{ github.workspace }}/reports/coverage/'
+          --
+          RunConfiguration.CollectSourceInformation=true
         timeout-minutes: 1
 
       - name: Upload Test Artifacts
