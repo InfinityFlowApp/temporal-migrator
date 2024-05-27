@@ -11,12 +11,13 @@ on:
   workflow_dispatch: {}
 
 env:
-  ASPIRE_ALLOW_UNSECURED_TRANSPORT: true
   DOTNET_NOLOGO: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
 
 jobs:
   publish:
+    env:
+      ASPIRE_ALLOW_UNSECURED_TRANSPORT: true
     runs-on: ubuntu-latest
     permissions:
       contents: read
