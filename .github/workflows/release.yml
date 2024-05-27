@@ -11,8 +11,9 @@ on:
   workflow_dispatch: {}
 
 env:
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  ASPIRE_ALLOW_UNSECURED_TRANSPORT: true
   DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
 
 jobs:
   publish:
@@ -40,7 +41,7 @@ jobs:
         run: dotnet build "./Migrator.sln" --configuration Release --no-restore
 
       - name: Test .NET Solution
-        run: dotnet test "./Migrator.sln" --collect:"XPlat Code Coverage" --no-build --configuration Release --logger "trx;LogFilePrefix=test-results" -property:DeterministicSourcePaths=true -property:IncludeTestAssembly=true --results-directory '${{ github.workspace }}/reports/coverage/'
+        run: dotnet test "./Migrator.sln" --collect:"XPlat Code Coverage" --no-build --configuration Release --logger console --logger GitHubActions --logger "trx;LogFilePrefix=test-results" -property:DeterministicSourcePaths=true -property:IncludeTestAssembly=true --results-directory '${{ github.workspace }}/reports/coverage/'
 
       - name: Upload Test Artifacts
         uses: actions/upload-artifact@v4
