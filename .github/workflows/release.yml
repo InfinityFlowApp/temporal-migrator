@@ -47,7 +47,7 @@ jobs:
           --collect:"XPlat Code Coverage" --no-build --configuration Release
           --logger console --logger GitHubActions --logger "trx;LogFilePrefix=test-results"
           -property:DeterministicSourcePaths=true -property:IncludeTestAssembly=true
-          --results-directory '${{ github.workspace }}/reports/coverage/'
+          --results-directory '${{ github.workspace }}/reports/coverage/' --blame
           --
           RunConfiguration.CollectSourceInformation=true
         timeout-minutes: 1
