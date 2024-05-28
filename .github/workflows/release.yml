@@ -44,7 +44,7 @@ jobs:
       - name: Test .NET Solution
         run: >
           dotnet test "./Migrator.sln"
-          --collect:"XPlat Code Coverage" --no-build --configuration Release
+          --collect:"XPlat Code Coverage" --no-build --verbosity normal --configuration Release
           --logger console --logger GitHubActions --logger "trx;LogFilePrefix=test-results"
           -property:DeterministicSourcePaths=true -property:IncludeTestAssembly=true
           --results-directory '${{ github.workspace }}/reports/coverage/' --blame
