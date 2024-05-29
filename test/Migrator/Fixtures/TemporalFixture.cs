@@ -43,6 +43,7 @@ public sealed class TemporalFixture : IAsyncLifetime
                 new TemporalClientOptions
                 {
                     Namespace = "test",
+                    LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole()),
                 });
     }
 
