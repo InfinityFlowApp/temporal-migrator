@@ -3,7 +3,6 @@
 
 using System.Text.Json;
 using InfinityFlow.Temporal.Migrator;
-using Temporalio.Client;
 using Temporalio.Converters;
 using Temporalio.Extensions.Hosting;
 
@@ -32,8 +31,6 @@ builder
 
 var host = builder.Build();
 
-var temporalClient = host.Services.GetRequiredService<ITemporalClient>();
-
-temporalClient.RunMigrator(new WorkflowOptions { Id = Guid.NewGuid().ToString(), TaskQueue = "test" });
-
+// var temporalClient = host.Services.GetRequiredService<ITemporalClient>();
+// temporalClient.RunMigrator(new WorkflowOptions { Id = Guid.NewGuid().ToString(), TaskQueue = "test" });
 host.Run();
