@@ -13,6 +13,7 @@ var temporal = await builder
 
 builder
     .AddProject<Projects.InfinityFlow_Temporal_Migrator_Tests_Worker>("worker")
-    .WithReference(temporal);
+    .WithReference(temporal)
+    .WaitFor(temporal);
 
 await builder.Build().RunAsync();
