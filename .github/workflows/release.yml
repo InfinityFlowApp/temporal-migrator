@@ -24,10 +24,7 @@ jobs:
       packages: write
     services:
       temporal:
-        image: temporalio/admin-tools
-        options: >-
-          --entrypoint /usr/local/bin/temporal
-          server start-dev -p 7233 --ip 0.0.0.0 --namespace test
+        image: temporalio/admin-tools /usr/local/bin/temporal server start-dev -p 7233 --ip 0.0.0.0 --namespace test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
