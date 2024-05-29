@@ -36,6 +36,7 @@ public sealed class TemporalFixture : IAsyncLifetime
         _application = await appHost.BuildAsync();
         await _application.StartAsync();
         var targetHost = _application.GetEndpoint("temporal", "server");
+        _logger.LogInformation("TargetHost: {TargetHost}", targetHost.Authority);
         _temporalClient =
             new TemporalClient(
                 await TemporalConnection.ConnectAsync(new TemporalConnectionOptions(targetHost.Authority)),
