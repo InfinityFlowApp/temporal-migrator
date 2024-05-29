@@ -3,16 +3,16 @@
 
 namespace InfinityFlow.Temporal.Migrator.Tests.Fixtures;
 
-using System.Text.Json;
-using Abstractions;
+using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Temporalio.Client;
-using Temporalio.Converters;
 
 /// <summary>
 /// Temporal Fixture.
 /// </summary>
 public sealed class TemporalFixture : IAsyncLifetime
 {
+    private readonly ILogger _logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<TemporalTests>();
     private DistributedApplication? _application;
     private ITemporalClient? _temporalClient;
 
@@ -31,6 +31,7 @@ public sealed class TemporalFixture : IAsyncLifetime
     /// <inheritdoc/>
     public async Task InitializeAsync()
     {
+        _logger.LogInformation($"Initialize {nameof(TemporalFixture)}");
         var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.InfinityFlow_Temporal_Migrator_AppHost>();
         _application = await appHost.BuildAsync();
         await _application.StartAsync();
@@ -47,6 +48,7 @@ public sealed class TemporalFixture : IAsyncLifetime
     /// <inheritdoc/>
     public async Task DisposeAsync()
     {
+        _logger.LogInformation($"Dispose {nameof(TemporalFixture)}");
         if (_application is not null)
         {
             await _application.StopAsync();

@@ -5,9 +5,8 @@ namespace InfinityFlow.Temporal.Migrator.Tests;
 
 using Collections;
 using Fixtures;
-using Grpc.Net.Client.Configuration;
+using Microsoft.Extensions.Logging;
 using Temporalio.Client;
-using RetryPolicy = Temporalio.Common.RetryPolicy;
 
 /// <summary>
 /// Temporal Tests.
@@ -15,6 +14,7 @@ using RetryPolicy = Temporalio.Common.RetryPolicy;
 [Collection(TemporalCollectionFixture.Name)]
 public class TemporalTests
 {
+    private readonly ILogger _logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<TemporalTests>();
     private readonly ITemporalClient _temporalClient;
 
     /// <summary>
@@ -34,6 +34,7 @@ public class TemporalTests
     [Fact]
     public async Task TemporalWorkflowFromStartToFinish()
     {
+        _logger.LogInformation("Starting Test");
         await _temporalClient
             .RunMigrator(
                 new WorkflowOptions
