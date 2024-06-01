@@ -22,7 +22,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    container: "ubuntu:latest"
+    container: "ubuntu:jammy"
     services:
       temporal:
         image: ghcr.io/infinityflowapp/temporal-gha-service:v0.1.1
@@ -33,7 +33,7 @@ jobs:
       - run: >
           apt-get update
       - run: >
-          apt-get install -y curl libicu67
+          apt-get install -y curl
 
       - name: Checkout
         uses: actions/checkout@v4
