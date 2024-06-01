@@ -22,6 +22,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+    container: "ubuntu:latest"
     services:
       temporal:
         image: ghcr.io/infinityflowapp/temporal-gha-service:v0.1.1

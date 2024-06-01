@@ -35,11 +35,12 @@ public sealed class TemporalFixture : IAsyncLifetime
         var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.InfinityFlow_Temporal_Migrator_AppHost>();
         _application = await appHost.BuildAsync();
         await _application.StartAsync();
-        var targetHost = _application.GetEndpoint("temporal", "server");
-        _logger.LogInformation("TargetHost: {TargetHost}", targetHost.Authority);
+
+        // var targetHost = _application.GetEndpoint("temporal", "server");
+        // _logger.LogInformation("TargetHost: {TargetHost}", targetHost.Authority);
         _temporalClient =
             new TemporalClient(
-                await TemporalConnection.ConnectAsync(new TemporalConnectionOptions("localhost:7233")),
+                await TemporalConnection.ConnectAsync(new TemporalConnectionOptions("temporal:7233")),
                 new TemporalClientOptions
                 {
                     Namespace = "test",
