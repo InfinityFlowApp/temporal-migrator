@@ -24,7 +24,9 @@ jobs:
       packages: write
     services:
       temporal:
-        image: temporalio/admin-tools /usr/local/bin/temporal server start-dev -p 7233 --ip 0.0.0.0 --namespace test
+        image: ghcr.io/infinityflowapp/temporal-gha-service:v0.1.1
+        ports:
+          - 7233:7233
     steps:
       - name: Checkout
         uses: actions/checkout@v4
