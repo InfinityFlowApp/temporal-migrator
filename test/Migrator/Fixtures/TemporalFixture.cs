@@ -39,7 +39,7 @@ public sealed class TemporalFixture : IAsyncLifetime
         _logger.LogInformation("TargetHost: {TargetHost}", targetHost.Authority);
         _temporalClient =
             new TemporalClient(
-                await TemporalConnection.ConnectAsync(new TemporalConnectionOptions("temporal:7233")),
+                await TemporalConnection.ConnectAsync(new TemporalConnectionOptions("localhost:7233")),
                 new TemporalClientOptions
                 {
                     Namespace = "test",
