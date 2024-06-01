@@ -28,7 +28,12 @@ jobs:
         image: ghcr.io/infinityflowapp/temporal-gha-service:v0.1.1
         ports:
           - 7233:7233
+
     steps:
+      - run: >
+          apt-get update
+          apt-get install -y curl
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -39,6 +44,7 @@ jobs:
         with:
           dotnet-version: |
             8.0.x
+
       - name: Restore .NET Packages
         run: |
           dotnet workload restore "./Migrator.sln"
