@@ -33,7 +33,7 @@ jobs:
       - run: >
           apt-get update
       - run: >
-          apt-get install -y curl icu
+          apt-get install -y curl libicu70
 
       - name: Checkout
         uses: actions/checkout@v4
