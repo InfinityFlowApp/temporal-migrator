@@ -13,10 +13,10 @@ builder
     .AddTemporalClient(options =>
     {
         options.Namespace = "test";
-        options.TargetHost = builder.Configuration.GetConnectionString("temporal");
+        options.TargetHost = "temporal:7233"; // builder.Configuration.GetConnectionString("temporal");
     })
     .AddHostedTemporalWorker(
-        builder.Configuration.GetConnectionString("temporal")!,
+        "temporal:7233", // builder.Configuration.GetConnectionString("temporal")!,
         "test",
         "test")
     .AddWorkflow<MigrationWorkflow>()
