@@ -3,62 +3,72 @@
 
 namespace InfinityFlow.Temporal.Migrator.Tests.Fixtures;
 
-using System.Diagnostics;
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Temporalio.Client;
+using Temporalio.Converters;
+using Temporalio.Testing;
+using Temporalio.Worker;
 
 /// <summary>
 /// Temporal Fixture.
 /// </summary>
-public sealed class TemporalFixture : IAsyncLifetime
+public sealed partial class TemporalFixture : IAsyncLifetime
 {
     private readonly ILogger _logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<TemporalTests>();
-    private DistributedApplication? _application;
-    private ITemporalClient? _temporalClient;
-
-    /// <summary>
-    /// Gets the application.
-    /// </summary>
-    /// <value>The application.</value>
-    public DistributedApplication? Application => _application;
+    private WorkflowEnvironment? _workflowEnvironment;
+    private TemporalWorker? _temporalWorker;
 
     /// <summary>
     /// Gets the temporal client.
     /// </summary>
     /// <value>The temporal client.</value>
-    public ITemporalClient? TemporalClient => _temporalClient;
+    public ITemporalClient? TemporalClient => _workflowEnvironment?.Client;
 
     /// <inheritdoc/>
     public async Task InitializeAsync()
     {
-        _logger.LogInformation($"Initialize {nameof(TemporalFixture)}");
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.InfinityFlow_Temporal_Migrator_AppHost>();
-        _application = await appHost.BuildAsync();
-        await _application.StartAsync();
+        LogInitialized();
+        var serializerOptions = new JsonSerializerOptions();
+        serializerOptions.Converters.Add(new TypeJsonConverter());
+        _workflowEnvironment = await WorkflowEnvironment.StartLocalAsync(new WorkflowEnvironmentStartLocalOptions
+        {
+            Namespace = "test",
+            LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole()),
+            DataConverter = new DataConverter(new DefaultPayloadConverter(serializerOptions), new DefaultFailureConverter()),
+        });
 
-        // var targetHost = _application.GetEndpoint("temporal", "server");
-        // _logger.LogInformation("TargetHost: {TargetHost}", targetHost.Authority);
-        _temporalClient =
-            new TemporalClient(
-                await TemporalConnection.ConnectAsync(new TemporalConnectionOptions("temporal:7233")),
-                new TemporalClientOptions
-                {
-                    Namespace = "test",
-                    LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole()),
-                });
+        var options = new TemporalWorkerOptions
+            {
+                TaskQueue = "test",
+                DebugMode = true,
+            }
+            .AddWorkflow<MigrationWorkflow>()
+            .AddAllActivities(new MigrationActivities());
+
+        _temporalWorker = new TemporalWorker(TemporalClient!, options);
+
+        await Task.Delay(TimeSpan.FromSeconds(5));
     }
 
     /// <inheritdoc/>
-    public async Task DisposeAsync()
+    public Task DisposeAsync()
     {
-        _logger.LogInformation($"Dispose {nameof(TemporalFixture)}");
-        if (_application is not null)
-        {
-            await _application.StopAsync();
-            await _application.DisposeAsync();
-        }
-
-        _temporalClient = null;
-        _application = null;
+        LogDisposed();
+        return _workflowEnvironment?.DisposeAsync().AsTask() ?? Task.CompletedTask;
     }
+
+    [LoggerMessage(
+        EventId = 100,
+        EventName = "Initialize",
+        Level = LogLevel.Information,
+        Message = $"Initialize {nameof(TemporalFixture)}")]
+    private partial void LogInitialized();
+
+    [LoggerMessage(
+        EventId = 999,
+        EventName = "Dispose",
+        Level = LogLevel.Information,
+        Message = $"Dispose {nameof(TemporalFixture)}")]
+    private partial void LogDisposed();
 }
