@@ -17,8 +17,7 @@ public class TypeJsonConverter : JsonConverter<Type>
     public TypeJsonConverter()
     {
         _loadedTypes = GlobalReflector
-            .GetDomain()
-            .GetAssemblies()
+            .GetRuntimeAssemblies()
             .SelectMany(assembly => assembly
                 .GetTypes()
                 .Where(t => GlobalReflector.Migration.IsAssignableFrom(t) && t is { IsInterface: false, IsAbstract: false }));

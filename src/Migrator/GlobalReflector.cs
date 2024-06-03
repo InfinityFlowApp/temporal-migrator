@@ -3,8 +3,10 @@
 
 namespace InfinityFlow.Temporal.Migrator;
 
+using System.Diagnostics;
 using System.Reflection;
 using Abstractions;
+using Microsoft.Extensions.DependencyModel;
 
 /// <summary>
 /// Global Reflector.
@@ -18,22 +20,51 @@ internal static class GlobalReflector
     public static Type Migration => typeof(IMigration);
 
     /// <summary>
-    /// Get All Types.
-    /// </summary>
-    /// <returns>The list of types.</returns>
-    public static AppDomain GetDomain() => AppDomain
-        .CurrentDomain;
-
-    /// <summary>
     /// Get Migrations.
     /// </summary>
     /// <param name="assemblies">The assemblies to scan.</param>
     /// <returns>The migration types.</returns>
     public static IEnumerable<Type> GetMigrations(Assembly[]? assemblies = null) => (assemblies is null || assemblies.Length == 0
-            ? GetDomain().GetAssemblies()
+            ? GetRuntimeAssemblies()
             : assemblies)
         .SelectMany(assembly => assembly.GetTypes())
         .Where(type => Migration.IsAssignableFrom(type) && type is { IsInterface: false, IsAbstract: false });
+
+    /// <summary>
+    /// Get Runtime Assemblies.
+    /// </summary>
+    /// <returns>A list of assemblies that the application depends on.</returns>
+    public static Assembly[] GetRuntimeAssemblies()
+    {
+        var assemblies = new List<Assembly>();
+        var dependencies = DependencyContext.Default?.RuntimeLibraries;
+
+        if (dependencies is null)
+        {
+            return assemblies.ToArray();
+        }
+
+        foreach (var library in dependencies)
+        {
+            try
+            {
+                var assembly = Assembly.Load(library.Name);
+                assemblies.Add(assembly);
+            }
+            catch (TypeLoadException tle)
+            {
+                Debug.WriteLine("Lading {0} failed", tle.TypeName);
+            }
+            catch (FileNotFoundException fnfe)
+            {
+                Debug.WriteLine("Loading {0} failed (Not Found)", fnfe.FileName);
+            }
+        }
+
+        Debug.WriteLine("Loaded {0} Assemblies", assemblies.Count);
+
+        return assemblies.ToArray();
+    }
 
     /// <summary>
     /// Get Migrations.
