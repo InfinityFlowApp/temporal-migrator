@@ -20,5 +20,6 @@
     <ProjectReference Include="..\..\src\Abstractions\InfinityFlow.Temporal.Migrator.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\Aspire\AppHost\InfinityFlow.Temporal.Migrator.AppHost.csproj" />
     <ProjectReference Include="..\..\src\Migrator\InfinityFlow.Temporal.Migrator.csproj" />
+    <ProjectReference Include="..\Worker\InfinityFlow.Temporal.Migrator.Tests.Worker.csproj" />
   </ItemGroup>
 </Project>

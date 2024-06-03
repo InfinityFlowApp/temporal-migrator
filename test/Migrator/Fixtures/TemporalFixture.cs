@@ -13,17 +13,38 @@ using Temporalio.Worker;
 /// <summary>
 /// Temporal Fixture.
 /// </summary>
-public sealed partial class TemporalFixture : IAsyncLifetime
+public sealed partial class TemporalFixture : IAsyncLifetime, IDisposable
 {
     private readonly ILogger _logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<TemporalTests>();
     private WorkflowEnvironment? _workflowEnvironment;
     private TemporalWorker? _temporalWorker;
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="TemporalFixture"/> class.
+    /// </summary>
+    public TemporalFixture()
+    {
+    }
+
+    /// <summary>
+    /// Finalizes an instance of the <see cref="TemporalFixture"/> class.
+    /// </summary>
+    ~TemporalFixture()
+    {
+        Dispose(false);
+    }
+
+    /// <summary>
     /// Gets the temporal client.
     /// </summary>
     /// <value>The temporal client.</value>
     public ITemporalClient? TemporalClient => _workflowEnvironment?.Client;
+
+    /// <summary>
+    /// Gets the temporal worker.
+    /// </summary>
+    /// <value>The temporal worker.</value>
+    public TemporalWorker? TemporalWorker => _temporalWorker;
 
     /// <inheritdoc/>
     public async Task InitializeAsync()
@@ -42,6 +63,7 @@ public sealed partial class TemporalFixture : IAsyncLifetime
             {
                 TaskQueue = "test",
                 DebugMode = true,
+                LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole()),
             }
             .AddWorkflow<MigrationWorkflow>()
             .AddAllActivities(new MigrationActivities());
@@ -52,10 +74,50 @@ public sealed partial class TemporalFixture : IAsyncLifetime
     }
 
     /// <inheritdoc/>
-    public Task DisposeAsync()
+    public async Task DisposeAsync()
     {
         LogDisposed();
-        return _workflowEnvironment?.DisposeAsync().AsTask() ?? Task.CompletedTask;
+
+        // Perform async cleanup.
+        await DisposeAsyncCore();
+
+        // Dispose of unmanaged resources.
+        Dispose(false);
+
+        // Suppress finalization.
+        GC.SuppressFinalize(this);
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Dispose.
+    /// </summary>
+    /// <param name="disposing">The disposing.</param>
+    public void Dispose(bool disposing)
+    {
+        if (!disposing)
+        {
+            return;
+        }
+
+        _temporalWorker?.Dispose();
+        _temporalWorker = null;
+    }
+
+    private async ValueTask DisposeAsyncCore()
+    {
+        if (_workflowEnvironment is not null)
+        {
+            await _workflowEnvironment.DisposeAsync().ConfigureAwait(false);
+        }
+
+        _workflowEnvironment = null;
     }
 
     [LoggerMessage(

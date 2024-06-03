@@ -7,6 +7,8 @@ using Collections;
 using Fixtures;
 using Microsoft.Extensions.Logging;
 using Temporalio.Client;
+using Temporalio.Worker;
+using Worker.Migrations;
 
 /// <summary>
 /// Temporal Tests.
@@ -16,6 +18,7 @@ public class TemporalTests
 {
     private readonly ILogger _logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<TemporalTests>();
     private readonly ITemporalClient _temporalClient;
+    private readonly TemporalWorker _temporalWorker;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TemporalTests"/> class.
@@ -25,6 +28,7 @@ public class TemporalTests
     {
         ArgumentNullException.ThrowIfNull(fixture);
         _temporalClient = fixture.TemporalClient!;
+        _temporalWorker = fixture.TemporalWorker!;
     }
 
     /// <summary>
@@ -35,13 +39,17 @@ public class TemporalTests
     public async Task TemporalWorkflowFromStartToFinish()
     {
         _logger.LogInformation("Starting Test");
-        await _temporalClient
-            .RunMigrator(
-                new WorkflowOptions
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    TaskQueue = "test",
-                });
+
+        await _temporalWorker.ExecuteAsync(async () =>
+        {
+            await _temporalClient
+                .RunMigrator(
+                    new WorkflowOptions
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        TaskQueue = "test",
+                    });
+        });
 
         Assert.True(true);
     }
