@@ -53,11 +53,11 @@ internal static class GlobalReflector
             }
             catch (TypeLoadException tle)
             {
-                Debug.WriteLine("Lading {0} failed", tle.TypeName);
+                Debug.WriteLine("Loading {0} failed", (object)tle.TypeName);
             }
             catch (FileNotFoundException fnfe)
             {
-                Debug.WriteLine("Loading {0} failed (Not Found)", fnfe.FileName);
+                Debug.WriteLine("Loading {0} failed (Not Found)", (object?)fnfe.FileName);
             }
         }
 
