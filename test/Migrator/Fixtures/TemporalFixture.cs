@@ -67,18 +67,12 @@ public sealed partial class TemporalFixture : IAsyncLifetime, IDisposable
                 LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole()),
             }
             .AddWorkflow<MigrationWorkflow>()
-            .AddActivity(() => new MigrationActivities(Options.Create(new MigratorOptions())))
             .AddAllActivities(new MigrationActivities(Options.Create(new MigratorOptions())));
 
         _temporalWorker = new TemporalWorker(TemporalClient!, options);
 
         await Task.Delay(TimeSpan.FromSeconds(5));
     }
-
-    /*public Task DisposeAsync()
-    {
-        return DisposeAsync().AsTask();
-    }*/
 
     /// <inheritdoc/>
     public async Task DisposeAsync()
