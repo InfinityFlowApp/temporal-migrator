@@ -1,0 +1,16 @@
+﻿InfinityFlow.Temporal.Migrator.MigrationActivities
+InfinityFlow.Temporal.Migrator.MigrationActivities.GetTypesAsync() -> System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<System.Type!>!>!
+InfinityFlow.Temporal.Migrator.MigrationActivities.MigrationActivities(Microsoft.Extensions.Options.IOptions<InfinityFlow.Temporal.Migrator.MigratorOptions!>! options) -> void
+InfinityFlow.Temporal.Migrator.MigratorOptions
+InfinityFlow.Temporal.Migrator.MigratorOptions.Assemblies.get -> System.Collections.ObjectModel.Collection<System.Reflection.Assembly!>!
+InfinityFlow.Temporal.Migrator.MigratorOptions.Assemblies.init -> void
+InfinityFlow.Temporal.Migrator.MigratorOptions.MigratorOptions() -> void
+InfinityFlow.Temporal.Migrator.RunType
+InfinityFlow.Temporal.Migrator.RunType.Bootstrap = 0 -> InfinityFlow.Temporal.Migrator.RunType
+InfinityFlow.Temporal.Migrator.RunType.Migration = 1 -> InfinityFlow.Temporal.Migrator.RunType
+Microsoft.Extensions.Hosting.ServiceCollectionExtensions
+static Microsoft.Extensions.Hosting.ServiceCollectionExtensions.AddTemporalMigrations(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static Temporalio.Client.TemporalClientExtensions.RunMigrator(this Temporalio.Client.ITemporalClient! temporalClient) -> System.Threading.Tasks.Task!
+static Temporalio.Client.TemporalClientExtensions.RunMigrator(this Temporalio.Client.ITemporalClient! temporalClient, params System.Reflection.Assembly![]! assemblies) -> System.Threading.Tasks.Task!
+static Temporalio.Client.TemporalClientExtensions.RunMigrator(this Temporalio.Client.ITemporalClient! temporalClient, Temporalio.Client.WorkflowOptions! workflowOptions, params System.Reflection.Assembly![]! assemblies) -> System.Threading.Tasks.Task!
+Temporalio.Client.TemporalClientExtensions

@@ -1,6 +1,8 @@
 ﻿// Copyright (c) InfinityFlow. All Rights Reserved.
 // Licensed under the Apache 2.0. See LICENSE file in the solution root for full license information.
 
+#pragma warning disable CA1812
+
 namespace InfinityFlow.Temporal.Migrator;
 
 using System.Reflection;
@@ -12,7 +14,7 @@ using Temporalio.Workflows;
 /// Migration Workflow.
 /// </summary>
 [Workflow]
-public class MigrationWorkflow
+internal class MigrationWorkflow
 {
     /// <summary>
     /// Default Task Queue Name.
@@ -56,7 +58,7 @@ public class MigrationWorkflow
         var workflowId = Workflow.Info.WorkflowId;
 
         var types = await Workflow.ExecuteLocalActivityAsync<MigrationActivities, IEnumerable<Type>>(
-            act => act.GetTypesAsync(assemblies),
+            act => act.GetTypesAsync(),
             new LocalActivityOptions
             {
                 ActivityId = $"{workflowId}_{nameof(MigrationActivities)}",

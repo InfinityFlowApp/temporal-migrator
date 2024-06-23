@@ -11,4 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Migrator\InfinityFlow.Temporal.Migrator.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Remove="Microsoft.CodeAnalysis.PublicApiAnalyzers"/>
+  </ItemGroup>
 </Project>

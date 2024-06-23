@@ -8,13 +8,12 @@ using Fixtures;
 using Microsoft.Extensions.Logging;
 using Temporalio.Client;
 using Temporalio.Worker;
-using Worker.Migrations;
 
 /// <summary>
 /// Temporal Tests.
 /// </summary>
 [Collection(TemporalCollectionFixture.Name)]
-public class TemporalTests
+public partial class TemporalTests
 {
     private readonly ILogger _logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<TemporalTests>();
     private readonly ITemporalClient _temporalClient;
@@ -38,7 +37,7 @@ public class TemporalTests
     [Fact]
     public async Task TemporalWorkflowFromStartToFinish()
     {
-        _logger.LogInformation("Starting Test");
+        LogTestStarted();
 
         await _temporalWorker.ExecuteAsync(async () =>
         {
@@ -53,4 +52,11 @@ public class TemporalTests
 
         Assert.True(true);
     }
+
+    [LoggerMessage(
+        EventId = 100,
+        EventName = "Starting Test",
+        Level = LogLevel.Information,
+        Message = "Starting Test")]
+    private partial void LogTestStarted();
 }

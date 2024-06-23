@@ -5,6 +5,7 @@ namespace InfinityFlow.Temporal.Migrator.Tests.Fixtures;
 
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Temporalio.Client;
 using Temporalio.Converters;
 using Temporalio.Testing;
@@ -66,12 +67,18 @@ public sealed partial class TemporalFixture : IAsyncLifetime, IDisposable
                 LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole()),
             }
             .AddWorkflow<MigrationWorkflow>()
-            .AddAllActivities(new MigrationActivities());
+            .AddActivity(() => new MigrationActivities(Options.Create(new MigratorOptions())))
+            .AddAllActivities(new MigrationActivities(Options.Create(new MigratorOptions())));
 
         _temporalWorker = new TemporalWorker(TemporalClient!, options);
 
         await Task.Delay(TimeSpan.FromSeconds(5));
     }
+
+    /*public Task DisposeAsync()
+    {
+        return DisposeAsync().AsTask();
+    }*/
 
     /// <inheritdoc/>
     public async Task DisposeAsync()
@@ -83,9 +90,6 @@ public sealed partial class TemporalFixture : IAsyncLifetime, IDisposable
 
         // Dispose of unmanaged resources.
         Dispose(false);
-
-        // Suppress finalization.
-        GC.SuppressFinalize(this);
     }
 
     /// <inheritdoc />
@@ -99,25 +103,32 @@ public sealed partial class TemporalFixture : IAsyncLifetime, IDisposable
     /// Dispose.
     /// </summary>
     /// <param name="disposing">The disposing.</param>
-    public void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (!disposing)
         {
             return;
         }
 
+        if (_workflowEnvironment is IAsyncDisposable asyncDisposable)
+        {
+            _ = asyncDisposable.DisposeAsync().AsTask();
+        }
+
         _temporalWorker?.Dispose();
-        _temporalWorker = null;
     }
 
     private async ValueTask DisposeAsyncCore()
     {
         if (_workflowEnvironment is not null)
         {
-            await _workflowEnvironment.DisposeAsync().ConfigureAwait(false);
+            await _workflowEnvironment.DisposeAsync();
         }
 
-        _workflowEnvironment = null;
+        if (_temporalWorker is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
     }
 
     [LoggerMessage(

@@ -577,3 +577,6 @@ dotnet_diagnostic.SA1651.severity = error
 dotnet_diagnostic.SX1101.severity = error
 dotnet_diagnostic.SX1309.severity = error
 dotnet_diagnostic.SX1309S.severity = error
+
+# Public API Analyzers
+dotnet_diagnostic.RS0016.severity = error

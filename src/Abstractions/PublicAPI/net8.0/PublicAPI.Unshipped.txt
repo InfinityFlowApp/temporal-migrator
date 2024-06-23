@@ -1,0 +1,5 @@
+﻿InfinityFlow.Temporal.Migrator.Abstractions.IMigration
+InfinityFlow.Temporal.Migrator.Abstractions.IMigration.ExecuteAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.ValueTask
+InfinityFlow.Temporal.Migrator.Abstractions.MigrationAttribute
+InfinityFlow.Temporal.Migrator.Abstractions.MigrationAttribute.MigrationAttribute(long version) -> void
+InfinityFlow.Temporal.Migrator.Abstractions.MigrationAttribute.Version.get -> long
