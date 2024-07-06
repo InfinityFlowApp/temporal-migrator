@@ -12,8 +12,23 @@ using System.Reflection;
 public class MigratorOptions
 {
     /// <summary>
+    /// Default Task Queue Name.
+    /// </summary>
+    public const string DefaultTaskQueueName = "migration";
+
+    /// <summary>
+    /// Default Client Target Host.
+    /// </summary>
+    public const string DefaultClientTargetHost = "localhost:7233";
+
+    /// <summary>
+    /// Default Client Namespace.
+    /// </summary>
+    public const string DefaultClientNamespace = "default";
+
+    /// <summary>
     /// Gets the assemblies.
     /// </summary>
     /// <value>The assemblies.</value>
-    public Collection<Assembly> Assemblies { get; init; } = [];
+    internal Collection<Assembly> Assemblies { get; init; } = [];
 }

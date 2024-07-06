@@ -5,9 +5,11 @@
 
 namespace InfinityFlow.Temporal.Migrator;
 
+using System.Diagnostics;
 using System.Reflection;
 using Abstractions;
 using Microsoft.Extensions.Logging;
+using Temporalio.Extensions.OpenTelemetry;
 using Temporalio.Workflows;
 
 /// <summary>
@@ -17,20 +19,20 @@ using Temporalio.Workflows;
 internal class MigrationWorkflow
 {
     /// <summary>
-    /// Default Task Queue Name.
+    /// Migration Source.
     /// </summary>
-    internal const string DefaultTaskQueueName = "migration";
+    private static readonly ActivitySource MigrationSource = new(nameof(MigrationWorkflow));
 
     /// <summary>
     /// Run Migration.
     /// </summary>
     /// <para>
-    /// For <see cref="RunType.Bootstrap"/> objects expects assembly list. If objects is null it will scan all of
-    /// the assemblies available to it.
+    /// For <see cref="RunType.Bootstrap"/> objects expects assembly list. If objects is null it will scan
+    /// all the assemblies available to it.
     /// </para>
     /// <para>
     /// For <see cref="RunType.Migration"/> objects expects a type list. Only one is allowed, and should not be
-    /// used outside of internal calls.
+    /// used outside internal calls.
     /// </para>
     /// <param name="runType">The run type.</param>
     /// <param name="objects">The objects.</param>
@@ -41,18 +43,56 @@ internal class MigrationWorkflow
         switch (runType)
         {
             case RunType.Bootstrap:
-                await RunEntryAsync(objects ?? [], Workflow.CancellationToken);
+                using (MigrationSource.TrackWorkflowDiagnosticActivity(nameof(RunType.Bootstrap)))
+                {
+                    await RunEntryAsync(Workflow.CancellationToken);
+                }
+
                 break;
             case RunType.Migration:
                 ArgumentNullException.ThrowIfNull(objects);
-                await RunMigrationAsync(objects[0], Workflow.CancellationToken);
+                using (MigrationSource.TrackWorkflowDiagnosticActivity(nameof(RunType.Migration)))
+                {
+                    await ExecuteMigrationAsync(objects[0], Workflow.CancellationToken);
+                }
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(runType), runType, "Invalid MigrationRunner option");
         }
     }
 
-    private async Task RunEntryAsync(string[] assemblies, CancellationToken cancellationToken)
+    /// <summary>
+    /// Run Migration.
+    /// </summary>
+    /// <param name="type">The type to run.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The <see cref="Task"/>.</returns>
+    private static async Task ExecuteMigrationAsync(string type, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var potentialMatches = GlobalReflector.GetMigrations(Array.Empty<Assembly>());
+
+        var enumerable = potentialMatches.ToList();
+        if (enumerable.Count != 0)
+        {
+            var first = enumerable.First(w => w.ToString() == type);
+
+            if (Activator.CreateInstance(first) is not IMigration migration)
+            {
+                throw new InvalidOperationException("Type is not a migration object");
+            }
+
+            await migration.ExecuteAsync(cancellationToken);
+        }
+        else
+        {
+            Workflow.Logger.LogWarning("No type was found for: {Type}", type);
+        }
+    }
+
+    private async Task RunEntryAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var workflowId = Workflow.Info.WorkflowId;
@@ -69,45 +109,21 @@ internal class MigrationWorkflow
         foreach (var migrationType in types)
         {
             var nextType = migrationType.ToString();
+            var nextTypeAttribute = migrationType.GetCustomAttribute<MigrationAttribute>();
+            var activityName = $"Migration:{nextType}@{nextTypeAttribute?.Version}";
 
-            await Workflow.ExecuteChildWorkflowAsync<MigrationWorkflow>(
-                s => s.RunAsync(
-                    RunType.Migration,
-                    new[] { nextType }),
-                new ChildWorkflowOptions
-                {
-                    Id = $"{workflowId}_{migrationType.Name}",
-                    CancellationToken = cancellationToken,
-                });
-        }
-    }
-
-    /// <summary>
-    /// Run Migration.
-    /// </summary>
-    /// <param name="type">The type to run.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>The <see cref="Task"/>.</returns>
-    private async Task RunMigrationAsync(string type, CancellationToken cancellationToken)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var potentialMatches = GlobalReflector.GetMigrations(Array.Empty<Assembly>());
-
-        if (potentialMatches.Count() != 0)
-        {
-            var first = potentialMatches.First(w => w.ToString() == type);
-
-            if (Activator.CreateInstance(first) is not IMigration migration)
+            using (MigrationSource.TrackWorkflowDiagnosticActivity(activityName))
             {
-                throw new InvalidOperationException("Type is not a migration object");
+                await Workflow.ExecuteChildWorkflowAsync<MigrationWorkflow>(
+                    s => s.RunAsync(
+                        RunType.Migration,
+                        new[] { nextType }),
+                    new ChildWorkflowOptions
+                    {
+                        Id = $"{workflowId}_{migrationType.Name}",
+                        CancellationToken = cancellationToken,
+                    });
             }
-
-            await migration.ExecuteAsync(cancellationToken);
-        }
-        else
-        {
-            Workflow.Logger.LogWarning("No type was found for: {Type}", type);
         }
     }
 }

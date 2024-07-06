@@ -11,11 +11,12 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Temporalio.Extensions.OpenTelemetry;
 
 /// <summary>
 /// Extensions.
 /// </summary>
-public static class Extensions
+public static class HostApplicationExtensions
 {
     /// <summary>
     /// Add Service Defaults.
@@ -52,6 +53,8 @@ public static class Extensions
     /// <returns>The updated host application builder.</returns>
     public static IHostApplicationBuilder ConfigureOpenTelemetry(this IHostApplicationBuilder builder)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+
         builder.Logging.AddOpenTelemetry(logging =>
         {
             logging.IncludeFormattedMessage = true;
@@ -67,11 +70,16 @@ public static class Extensions
             })
             .WithTracing(tracing =>
             {
-                tracing.AddAspNetCoreInstrumentation()
+                tracing
+                    .AddAspNetCoreInstrumentation()
 
                     // Uncomment the following line to enable gRPC instrumentation (requires the OpenTelemetry.Instrumentation.GrpcNetClient package)
                     // .AddGrpcClientInstrumentation()
-                    .AddHttpClientInstrumentation();
+                    .AddHttpClientInstrumentation()
+                    .AddSource(
+                        TracingInterceptor.ClientSource.Name,
+                        TracingInterceptor.WorkflowsSource.Name,
+                        TracingInterceptor.ActivitiesSource.Name);
             });
 
         builder.AddOpenTelemetryExporters();
@@ -102,6 +110,8 @@ public static class Extensions
     /// <returns>The updated web application.</returns>
     public static WebApplication MapDefaultEndpoints(this WebApplication app)
     {
+        ArgumentNullException.ThrowIfNull(app);
+
         // Uncomment the following line to enable the Prometheus endpoint (requires the OpenTelemetry.Exporter.Prometheus.AspNetCore package)
         // app.MapPrometheusScrapingEndpoint();
 

@@ -10,6 +10,7 @@
     <PackageVersion Include="GitVersion.MsBuild" Version="5.12.0"/>
     <PackageVersion Include="InfinityFlow.Aspire.Temporal" Version="0.5.8"/>
     <PackageVersion Include="InfinityFlow.Tools.Branding" Version="0.1.0"/>
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0"/>
     <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="8.0.0"/>
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.0"/>
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="8.3.0"/>
@@ -24,8 +25,10 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.8.0"/>
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.25.0.90414"/>
     <PackageVersion Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556"/>
-    <PackageVersion Include="Temporalio" Version="1.1.2"/>
-    <PackageVersion Include="Temporalio.Extensions.Hosting" Version="1.1.2"/>
+    <PackageVersion Include="Temporalio" Version="1.2.0"/>
+    <PackageVersion Include="Temporalio.Extensions.Hosting" Version="1.2.0"/>
+    <PackageVersion Include="Temporalio.Extensions.DiagnosticSource" Version="1.2.0"/>
+    <PackageVersion Include="Temporalio.Extensions.OpenTelemetry" Version="1.2.0"/>
     <PackageVersion Include="xunit" Version="2.8.1"/>
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.1"/>
   </ItemGroup>

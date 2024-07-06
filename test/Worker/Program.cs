@@ -10,24 +10,7 @@ var builder = Host.CreateApplicationBuilder(args);
 
 builder
     .Services
-    .AddTemporalClient(options =>
-    {
-        options.Namespace = "test";
-        options.TargetHost = "temporal:7233"; // builder.Configuration.GetConnectionString("temporal");
-    })
-    .AddHostedTemporalWorker(
-        "temporal:7233", // builder.Configuration.GetConnectionString("temporal")!,
-        "test",
-        "test")
-    .AddWorkflow<MigrationWorkflow>()
-    .AddSingletonActivities<MigrationActivities>()
-    .ConfigureOptions(options =>
-    {
-        var serializerOptions = new JsonSerializerOptions();
-        serializerOptions.Converters.Add(new TypeJsonConverter());
-        options.ClientOptions.DataConverter =
-            new DataConverter(new DefaultPayloadConverter(serializerOptions), new DefaultFailureConverter());
-    });
+    .AddTemporalMigrations(taskQueue: "test", clientNamespace: "test");
 
 var host = builder.Build();
 

@@ -31,6 +31,14 @@ internal static class GlobalReflector
         .Where(type => Migration.IsAssignableFrom(type) && type is { IsInterface: false, IsAbstract: false });
 
     /// <summary>
+    /// Get Migrations.
+    /// </summary>
+    /// <param name="assemblies">The assemblies to scan.</param>
+    /// <returns>The migration types.</returns>
+    public static IEnumerable<Type> GetMigrations(string[]? assemblies = null) =>
+        GetMigrations(assemblies is null ? null : ConvertAssembliesFromString(assemblies));
+
+    /// <summary>
     /// Get Runtime Assemblies.
     /// </summary>
     /// <returns>A list of assemblies that the application depends on.</returns>
@@ -65,14 +73,6 @@ internal static class GlobalReflector
 
         return assemblies.ToArray();
     }
-
-    /// <summary>
-    /// Get Migrations.
-    /// </summary>
-    /// <param name="assemblies">The assemblies to scan.</param>
-    /// <returns>The migration types.</returns>
-    public static IEnumerable<Type> GetMigrations(string[]? assemblies = null) =>
-        GetMigrations(assemblies is null ? null : ConvertAssembliesFromString(assemblies));
 
     private static Assembly[] ConvertAssembliesFromString(string[] assemblies)
     {
