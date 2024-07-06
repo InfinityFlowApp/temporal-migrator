@@ -11,14 +11,16 @@ using Temporalio.Workflows;
 /// M1.
 /// </summary>
 [Migration(1)]
-public class M1 : IMigration
+public partial class M1 : IMigration
 {
+    private readonly ILogger _logger = Workflow.Logger;
+
     /// <inheritdoc />
     public ValueTask ExecuteAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        Workflow.Logger.LogInformation("In M1 - {InWorkflow}", Workflow.InWorkflow);
+        LogM1(Workflow.InWorkflow);
         if (!Workflow.InWorkflow)
         {
             throw new InvalidOperationException("Not in workflow");
@@ -26,4 +28,11 @@ public class M1 : IMigration
 
         return ValueTask.CompletedTask;
     }
+
+    [LoggerMessage(
+        EventId = 0,
+        EventName = "M1",
+        Level = LogLevel.Information,
+        Message = "In M1 - {inWorkflow}")]
+    private partial void LogM1(bool inWorkflow);
 }
