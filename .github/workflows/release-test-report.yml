@@ -1,0 +1,21 @@
+﻿name: Release Test Report
+on:
+  workflow_run:
+    workflows:
+      - Release
+    types:
+      - completed
+permissions:
+  contents: read
+  actions: read
+  checks: write
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dorny/test-reporter@v1
+        with:
+          artifact: test-results
+          name: dotnet tests
+          path: '**/test-results*.trx'
+          reporter: dotnet-trx

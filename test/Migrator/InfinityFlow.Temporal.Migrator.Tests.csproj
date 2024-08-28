@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.Testing"/>
+    <PackageReference Include="coverlet.collector"/>
+    <PackageReference Include="GitHubActionsTestLogger"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+    <PackageReference Include="Temporalio"/>
+    <PackageReference Include="Temporalio.Extensions.Hosting"/>
+    <PackageReference Include="Temporalio.Extensions.DiagnosticSource"/>
+    <PackageReference Include="xunit"/>
+    <PackageReference Include="xunit.runner.visualstudio"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Aspire.Hosting.Testing"/>
+    <Using Include="Xunit"/>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Abstractions\InfinityFlow.Temporal.Migrator.Abstractions.csproj"/>
+    <ProjectReference Include="..\..\src\Aspire\AppHost\InfinityFlow.Temporal.Migrator.AppHost.csproj"/>
+    <ProjectReference Include="..\..\src\Migrator\InfinityFlow.Temporal.Migrator.csproj"/>
+    <ProjectReference Include="..\Worker\InfinityFlow.Temporal.Migrator.Tests.Worker.csproj"/>
+  </ItemGroup>
+</Project>

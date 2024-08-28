@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsAspireHost>true</IsAspireHost>
+    <IsPackable>false</IsPackable>
+    <UserSecretsId>102B9DBC-01A4-4DAB-8530-6B9E3C10C956</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost"/>
+    <PackageReference Include="InfinityFlow.Aspire.Temporal"/>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\test\Worker\InfinityFlow.Temporal.Migrator.Tests.Worker.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,6 @@
+mode: ContinuousDeployment
+branches:
+  main:
+    tag: rc
+  pull-request:
+    tag: pr

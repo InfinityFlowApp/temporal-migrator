@@ -1,0 +1,26 @@
+﻿const InfinityFlow.Temporal.Migrator.MigratorOptions.DefaultClientNamespace = "default" -> string!
+const InfinityFlow.Temporal.Migrator.MigratorOptions.DefaultClientTargetHost = "localhost:7233" -> string!
+const InfinityFlow.Temporal.Migrator.MigratorOptions.DefaultTaskQueueName = "migration" -> string!
+InfinityFlow.Temporal.Migrator.Builder.ITemporalMigratorBuilder
+InfinityFlow.Temporal.Migrator.Builder.ITemporalMigratorBuilder.Name.get -> string!
+InfinityFlow.Temporal.Migrator.Builder.ITemporalMigratorBuilder.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+InfinityFlow.Temporal.Migrator.MigratorOptions
+InfinityFlow.Temporal.Migrator.MigratorOptions.MigratorOptions() -> void
+InfinityFlow.Temporal.Migrator.MigratorOptionsBuilderExtensions
+InfinityFlow.Temporal.Migrator.RunType
+InfinityFlow.Temporal.Migrator.RunType.Bootstrap = 0 -> InfinityFlow.Temporal.Migrator.RunType
+InfinityFlow.Temporal.Migrator.RunType.Migration = 1 -> InfinityFlow.Temporal.Migrator.RunType
+InfinityFlow.Temporal.Migrator.TemporalMigratorBuilderExtensions
+Microsoft.Extensions.Hosting.ServiceCollectionExtensions
+static InfinityFlow.Temporal.Migrator.MigratorOptionsBuilderExtensions.AddAssemblies(this Microsoft.Extensions.Options.OptionsBuilder<InfinityFlow.Temporal.Migrator.MigratorOptions!>! builder, params System.Reflection.Assembly![]! assemblies) -> Microsoft.Extensions.Options.OptionsBuilder<InfinityFlow.Temporal.Migrator.MigratorOptions!>!
+static InfinityFlow.Temporal.Migrator.MigratorOptionsBuilderExtensions.AddAssemblies(this Microsoft.Extensions.Options.OptionsBuilder<InfinityFlow.Temporal.Migrator.MigratorOptions!>! builder, System.Collections.Generic.IEnumerable<System.Reflection.Assembly!>! assemblies) -> Microsoft.Extensions.Options.OptionsBuilder<InfinityFlow.Temporal.Migrator.MigratorOptions!>!
+static InfinityFlow.Temporal.Migrator.MigratorOptionsBuilderExtensions.AddAssembly(this Microsoft.Extensions.Options.OptionsBuilder<InfinityFlow.Temporal.Migrator.MigratorOptions!>! builder, System.Reflection.Assembly! assembly) -> Microsoft.Extensions.Options.OptionsBuilder<InfinityFlow.Temporal.Migrator.MigratorOptions!>!
+static InfinityFlow.Temporal.Migrator.TemporalMigratorBuilderExtensions.ConfigureClientOptions(this InfinityFlow.Temporal.Migrator.Builder.ITemporalMigratorBuilder! temporalMigratorBuilder, System.Action<Microsoft.Extensions.Options.OptionsBuilder<Temporalio.Client.TemporalClientConnectOptions!>!>! configureOptions) -> InfinityFlow.Temporal.Migrator.Builder.ITemporalMigratorBuilder!
+static InfinityFlow.Temporal.Migrator.TemporalMigratorBuilderExtensions.ConfigureClientOptions(this InfinityFlow.Temporal.Migrator.Builder.ITemporalMigratorBuilder! temporalMigratorBuilder, System.Action<Temporalio.Client.TemporalClientConnectOptions!>! configureOptions) -> InfinityFlow.Temporal.Migrator.Builder.ITemporalMigratorBuilder!
+static InfinityFlow.Temporal.Migrator.TemporalMigratorBuilderExtensions.ConfigureMigratorOptions(this InfinityFlow.Temporal.Migrator.Builder.ITemporalMigratorBuilder! temporalMigratorBuilder, System.Action<InfinityFlow.Temporal.Migrator.MigratorOptions!>! configureOptions) -> InfinityFlow.Temporal.Migrator.Builder.ITemporalMigratorBuilder!
+static InfinityFlow.Temporal.Migrator.TemporalMigratorBuilderExtensions.ConfigureMigratorOptions(this InfinityFlow.Temporal.Migrator.Builder.ITemporalMigratorBuilder! temporalMigratorBuilder, System.Action<Microsoft.Extensions.Options.OptionsBuilder<InfinityFlow.Temporal.Migrator.MigratorOptions!>!>! configureOptions) -> InfinityFlow.Temporal.Migrator.Builder.ITemporalMigratorBuilder!
+static InfinityFlow.Temporal.Migrator.TemporalMigratorBuilderExtensions.ConfigureWorkerOptions(this InfinityFlow.Temporal.Migrator.Builder.ITemporalMigratorBuilder! temporalMigratorBuilder, System.Action<Temporalio.Extensions.Hosting.ITemporalWorkerServiceOptionsBuilder!>! configureOptions) -> InfinityFlow.Temporal.Migrator.Builder.ITemporalMigratorBuilder!
+static Microsoft.Extensions.Hosting.ServiceCollectionExtensions.AddTemporalMigrations(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, string! taskQueue = "migration", string! clientTargetHost = "localhost:7233", string! clientNamespace = "default", string? buildId = null) -> InfinityFlow.Temporal.Migrator.Builder.ITemporalMigratorBuilder!
+static Temporalio.Client.TemporalClientExtensions.ExecuteMigration(this Temporalio.Client.ITemporalClient! temporalClient, Temporalio.Client.WorkflowOptions! workflowOptions) -> System.Threading.Tasks.Task!
+static Temporalio.Client.TemporalClientExtensions.StartMigration(this Temporalio.Client.ITemporalClient! temporalClient, Temporalio.Client.WorkflowOptions! workflowOptions) -> System.Threading.Tasks.Task<Temporalio.Client.WorkflowHandle!>!
+Temporalio.Client.TemporalClientExtensions
