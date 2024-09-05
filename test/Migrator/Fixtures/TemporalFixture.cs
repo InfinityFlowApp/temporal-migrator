@@ -61,11 +61,11 @@ public sealed partial class TemporalFixture : IAsyncLifetime, IDisposable
         });
 
         var options = new TemporalWorkerOptions
-            {
-                TaskQueue = "test",
-                DebugMode = true,
-                LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole()),
-            }
+        {
+            TaskQueue = "test",
+            DebugMode = true,
+            LoggerFactory = LoggerFactory.Create(builder => builder.AddConsole()),
+        }
             .AddWorkflow<MigrationWorkflow>()
             .AddAllActivities(new MigrationActivities(Options.Create(new MigratorOptions())));
 
