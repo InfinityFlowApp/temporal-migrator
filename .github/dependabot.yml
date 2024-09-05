@@ -8,3 +8,22 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    labels:
+      - "dependencies"
+    open-pull-requests-limit: 10
+    groups:
+      aspire:
+        patterns:
+          - "Aspire"
+          - "Aspire.*"
+      dotnet:
+        patterns:
+          - "Microsoft.*"
+          - "System.*"
+      open-telemetry:
+        patterns:
+          - "OpenTelemetry.*"
+      temporal:
+        patterns:
+          - "Temporalio"
+          - "Temporalio.*"
