@@ -27,3 +27,9 @@ updates:
         patterns:
           - "Temporalio"
           - "Temporalio.*"
+      test:
+        patterns:
+          - "xunit"
+          - "xunit.*"
+          - "GitHubActionsTestLogger"
+          - "coverlet.collector"
