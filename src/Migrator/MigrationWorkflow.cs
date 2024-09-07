@@ -16,7 +16,7 @@ using Temporalio.Workflows;
 /// Migration Workflow.
 /// </summary>
 [Workflow]
-internal class MigrationWorkflow
+internal partial class MigrationWorkflow
 {
     /// <summary>
     /// Migration Source.
@@ -88,9 +88,16 @@ internal class MigrationWorkflow
         }
         else
         {
-            Workflow.Logger.LogWarning("No type was found for: {Type}", type);
+            LogNoTypeFound(Workflow.Logger, type);
         }
     }
+
+    [LoggerMessage(
+        EventId = 300,
+        EventName = "No Type Found",
+        Level = LogLevel.Warning,
+        Message = "No type was found for: {Type}")]
+    private static partial void LogNoTypeFound(ILogger logger, string type);
 
     private async Task RunEntryAsync(CancellationToken cancellationToken)
     {
