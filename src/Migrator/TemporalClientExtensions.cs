@@ -16,7 +16,7 @@ public static class TemporalClientExtensions
     /// <param name="temporalClient">The temporal client.</param>
     /// <param name="workflowOptions">The workflow options.</param>
     /// <returns>The <see cref="Task"/>.</returns>
-    public static Task ExecuteMigration(this ITemporalClient temporalClient, WorkflowOptions workflowOptions)
+    public static Task ExecuteMigrationAsync(this ITemporalClient temporalClient, WorkflowOptions workflowOptions)
     {
         ArgumentNullException.ThrowIfNull(temporalClient);
         ArgumentNullException.ThrowIfNull(workflowOptions);
@@ -31,7 +31,7 @@ public static class TemporalClientExtensions
     /// <param name="temporalClient">The temporal client.</param>
     /// <param name="workflowOptions">The workflow options.</param>
     /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-    public static async Task<WorkflowHandle> StartMigration(this ITemporalClient temporalClient, WorkflowOptions workflowOptions)
+    public static async Task<WorkflowHandle> StartMigrationAsync(this ITemporalClient temporalClient, WorkflowOptions workflowOptions)
     {
         ArgumentNullException.ThrowIfNull(temporalClient);
         ArgumentNullException.ThrowIfNull(workflowOptions);
