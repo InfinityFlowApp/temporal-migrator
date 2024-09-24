@@ -53,6 +53,21 @@ public static class ServiceCollectionExtensions
 
         var workerOptionsBuilder = services
             .AddHostedTemporalWorker(clientTargetHost, clientNamespace, taskQueue, buildId)
+            .ConfigureOptions(options =>
+            {
+                var serializerOptions = new JsonSerializerOptions();
+                serializerOptions.Converters.Add(new TypeJsonConverter());
+
+                options.Interceptors = [new TracingInterceptor()];
+
+                if (options.ClientOptions is null)
+                {
+                    return;
+                }
+
+                options.ClientOptions.DataConverter = new DataConverter(new DefaultPayloadConverter(serializerOptions), new DefaultFailureConverter());
+                options.ClientOptions.Interceptors = [new TracingInterceptor()];
+            })
             .AddWorkflow<MigrationWorkflow>()
             .AddSingletonActivities<MigrationActivities>();
 
