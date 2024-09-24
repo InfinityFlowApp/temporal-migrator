@@ -42,7 +42,7 @@ public partial class TemporalTests
         await _temporalWorker.ExecuteAsync(async () =>
         {
             await _temporalClient
-                .ExecuteMigration(
+                .ExecuteMigrationAsync(
                     new WorkflowOptions
                     {
                         Id = Guid.NewGuid().ToString(),
