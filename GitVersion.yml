@@ -1,6 +1,4 @@
-mode: ContinuousDeployment
 branches:
   main:
+    regex: '(main)?'
     label: rc
-  pull-request:
-    label: pr
