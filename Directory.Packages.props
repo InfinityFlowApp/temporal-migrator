@@ -3,8 +3,8 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.1.0"/>
-    <PackageVersion Include="Aspire.Hosting.Testing" Version="9.0.0"/>
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.2.0"/>
+    <PackageVersion Include="Aspire.Hosting.Testing" Version="9.2.0"/>
     <PackageVersion Include="coverlet.collector" Version="6.0.4"/>
     <PackageVersion Include="GitHubActionsTestLogger" Version="2.4.1"/>
     <PackageVersion Include="GitVersion.MsBuild" Version="6.1.0"/>
@@ -13,7 +13,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2"/>
     <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.2"/>
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.2"/>
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.2.0"/>
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.4.0"/>
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.0.0"/>
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4"/>
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0"/>
