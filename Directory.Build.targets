@@ -1,9 +1,9 @@
 <Project>
   <ItemGroup>
-    <None Pack="true" PackagePath="" Include="$(MSBuildThisFileDirectory)\LICENSE" Visible="false"/>
+    <None Pack="true" PackagePath="" Include="$(MSBuildThisFileDirectory)\LICENSE" Visible="false" />
   </ItemGroup>
   <ItemGroup>
-    <AdditionalFiles Include="$(SolutionDir)/stylecop.json" Visible="false"/>
+    <AdditionalFiles Include="$(SolutionDir)/stylecop.json" Visible="false" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="InfinityFlow.Tools.Branding">
