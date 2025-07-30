@@ -7,10 +7,12 @@
     <UserSecretsId>102B9DBC-01A4-4DAB-8530-6B9E3C10C956</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost"/>
-    <PackageReference Include="InfinityFlow.Aspire.Temporal"/>
+    <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="InfinityFlow.Aspire.Temporal" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" VersionOverride="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" VersionOverride="9.0.7" />
     <ProjectReference Include="..\..\..\test\Worker\InfinityFlow.Temporal.Migrator.Tests.Worker.csproj" />
   </ItemGroup>
 </Project>
