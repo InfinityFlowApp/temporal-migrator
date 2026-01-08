@@ -1,4 +1,4 @@
-﻿name: Release
+name: Release
 
 on:
   pull_request: {}
@@ -24,7 +24,7 @@ jobs:
       packages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
