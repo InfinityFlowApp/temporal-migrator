@@ -1,4 +1,4 @@
-﻿name: Release Test Report
+name: Release Test Report
 on:
   workflow_run:
     workflows:
@@ -13,7 +13,7 @@ jobs:
   report:
     runs-on: ubuntu-latest
     steps:
-      - uses: dorny/test-reporter@v1
+      - uses: dorny/test-reporter@v2
         with:
           artifact: test-results
           name: dotnet tests
