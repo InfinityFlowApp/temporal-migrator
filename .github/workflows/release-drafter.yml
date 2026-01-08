@@ -1,4 +1,4 @@
-﻿name: Release Drafter
+name: Release Drafter
 
 on:
   push:
@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Draft Release"
-        uses: release-drafter/release-drafter@v6.0.0
+        uses: release-drafter/release-drafter@v6.1.0
         with:
           prerelease: ${{ github.event.inputs.release-type != 'release' }}
         env:
