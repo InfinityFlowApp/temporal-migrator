@@ -1,4 +1,4 @@
-﻿name: Release
+name: Release
 
 on:
   pull_request: {}
@@ -54,7 +54,7 @@ jobs:
         timeout-minutes: 5
 
       - name: Upload Test Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: success() || failure()
         with:
           name: test-results
@@ -70,7 +70,7 @@ jobs:
         if: ${{ github.event_name == 'release'  && github.ref_type == 'tag' || github.event.release.tag_name }}
 
       - name: Store .NET Package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: nuget
           if-no-files-found: error
