@@ -13,5 +13,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Remove="Microsoft.CodeAnalysis.PublicApiAnalyzers"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" VersionOverride="10.0.2" />
   </ItemGroup>
 </Project>
